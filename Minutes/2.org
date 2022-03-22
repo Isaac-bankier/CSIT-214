@@ -1,0 +1,49 @@
+* Meteing details
+Date: 22-03-2022
+Started at 16:05
+
+** Attendence
+   Isaac
+   Quinn
+   Zhara
+   Gordon
+   Oliver
+
+* Projects
+Project was chosen as project 1
+
+* Job Assignment
+** Isaac (Software developer)
+   - User interface prototypes
+   - Functionality prototypes
+   - Minutes
+** Zhara (Hr manager)
+   - Risk management
+   - Project closing
+** Quinn (Document developer)
+   - Minutes
+   - WBS
+** Gordon (Document developer)
+   - Milestone reports
+   - Buisness case
+** Jay (Project manager)
+   - Justification for project selection
+   - Project charter
+** Oliver (Document developer)
+   - Effort cost estimation
+   - Project scope statement
+
+Finalised role distribution
+
+* Github
+  Ensured everyone had github accounts
+
+* Week 4 progress report
+  - Quinn to present
+  - Dot point format on assigned roles
+
+* Development Methodology
+  Prototype driven development or agile?
+  We decide on an agile development methodology over prototype driven design
+
+Ended at: 4:48
