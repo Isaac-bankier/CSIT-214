@@ -1,0 +1,38 @@
+* Atendees
+  Isaac
+  Jay
+  Gordon
+  Quinn
+
+* Started 15:37
+  Chaired by Gordon
+  
+* What we've done
+  We've so far prioritized the first 4 tasks
+  We don't know how far we've progressed on these tasks though because not everyone is here
+  
+** Jay
+    600 words. Not a lot but good progress. Made waited scoring system. Posted in discord to review.
+    We reviewed the scoring system and thought it was good.
+
+** Quinn
+   Worked on wbs on uni computers. We discussed what should and shouldn't be in the wbs. To finish off when in computer labs next and share to discord.
+
+** Gordon
+   Hasn't done much. To start and finish by next week. Zhara requires the buisness case to work on the charter.
+
+** Isaac
+   Worked on database and web server. Made key datastructures for everything. Uploaded to github for others to see.
+
+* Next few tasks
+  1. Risk management - relies on project scope
+  2. Effort cost estimation - relies on wbs, project scope
+  3. Demonstration of project execution - relies on everything
+  4. Version control - relies on everything
+  5. Project closing / lessons learnt - relies on everything
+  6. User interface - relies on wbs, project scope
+     
+* Actions before next week
+  Show what we've done in the discord
+
+* Meeting ended at 16:00
