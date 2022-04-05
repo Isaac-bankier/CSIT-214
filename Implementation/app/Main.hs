@@ -12,13 +12,6 @@ import Web.Spock.Lucid
 type Server ctx = SpockCtxM ctx Connection () () ()
 type Handler ctx = ActionCtxT ctx (WebStateM Connection () ()) ()
 
--- Database structure:
--- Flights: index, from, to
--- Seats: index, label, flight, cost, booked
--- Customers: index, name, email, password
--- InFlightServices: index, menuItem, seat
--- Menu: index, name, cost
-
 main :: IO ()
 main = do
   cfg <- defaultSpockCfg () (PCConn $ ConnBuilder (open "test.db") close (PoolCfg 1 1 1)) ()
