@@ -1,0 +1,33 @@
+* Minutes for Group ID 15
+
+* Meeting 7
+  Started 15:04
+  Minutes by Isaac
+  Chaired by Quinn
+  
+* Attendees
+  Isaac
+  Quinn
+  Jay
+  Gordon
+  Oliver
+  Zhara
+  
+* Work done so far
+  All initial tasks have been done
+  
+* Effective use of version control
+  No one has used the github for anything except the code
+  People should start using it for all their documents
+  
+* Code Status
+  The code is around 30% done
+  There's still some stuff to do like css and ordering services
+
+* Work for Jay
+  Jay has finished his assigned stuff but didn't have as much work to begin with. He can help by
+  Helping with risk management
+  Making dummy data for the web app
+  Unifying everyones documents
+
+* Ended 15:25
