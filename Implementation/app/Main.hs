@@ -8,10 +8,12 @@ import Data.HVect
 import Database.SQLite.Simple
 import Db
 import Login
-import SiteBuilders
 import UserManagement
 import Web.Spock
 import Web.Spock.Config
+import Home
+import BookFlight
+import MyFlights
 
 main :: IO ()
 main = do
@@ -26,7 +28,8 @@ baseHook = return HNil
 
 app :: Server ()
 app = prehook baseHook $ do
-  prehook authHook $ get "/" $ mkSite "Hello"
-  prehook authHook $ get "/about" $ mkSite "About"
-  prehook authHook $ getpost "/logout" logout
+  prehook authHook $ get "/" home
+  prehook authHook $ get "/myFlights" myFlights
+  prehook authHook $ getpost "/bookFlights" bookFlight
+  prehook authHook $ get "/logout" logout
   prehook loggedOutHook $ getpost "/login" login

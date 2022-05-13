@@ -36,9 +36,9 @@ login = do
       Just (u', p') -> do
         userQ <- runSqlQuery "SELECT * FROM users WHERE email = ? AND password = ?" [u', p']
         case userQ of
-          [User {}] -> do
+          [User uid _ _ _] -> do
             sessionRegenerateId
-            writeSession $ Just 0
+            writeSession $ Just uid
             redirect "/"
           _ -> redirect "/login"
       Nothing -> redirect "/login"

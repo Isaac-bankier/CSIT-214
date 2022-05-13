@@ -3,28 +3,41 @@
 module Db
   ( initDb
   , User(..)
+  , Flight (..)
+  , Seat (..)
+  , Booking (..)
   ) where
 
-import Control.Lens
 import qualified Data.Text as T
 import Database.SQLite.Simple
 import Control.Monad
 
--- Database structure:
--- Flights: index, from, to
--- Seats: index, label, flight, cost, booked
--- Customers: index, name, email, password
--- InFlightServices: index, menuItem, seat
--- Menu: index, name, cost
--- Managers: index, name, email, password
-
 initDb :: Connection -> IO ()
-initDb conn = do
-  execute_ conn "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, name TEXT, password TEXT);"
-  rows <- query_ conn "SELECT * FROM users WHERE name = \"admin\"" :: IO [User]
-  when (null rows) $ execute_ conn "INSERT INTO users (email, name, password) VALUES (\"admin@admin.com\", \"admin\", \"pass\");"
+initDb c = do
+  -- Setup users
+  execute_ c "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, name TEXT, password TEXT);"
+  userRows <- query_ c "SELECT * FROM users" :: IO [User]
+  when (null userRows) $ execute_ c "INSERT INTO users (email, name, password) VALUES (\"admin@admin.com\", \"admin\", \"pass\");"
+  -- Setup flights
+  execute_ c "CREATE TABLE IF NOT EXISTS flights (id INTEGER PRIMARY KEY, fromCity TEXT, toCity TEXT, date TEXT);"
+  flightRows <- query_ c "SELECT * FROM flights" :: IO [User]
+  when (null flightRows) $ foldr (*>) (return ())
+    [ execute_ c "INSERT INTO flights (fromCity, toCity, date) VALUES (\"Sydney\", \"Melbourne\", \"13-07-2021\");"
+    , execute_ c "INSERT INTO flights (fromCity, toCity, date) VALUES (\"Melbourne\", \"Sydney\", \"14-07-2021\");"
+    ]
+  -- Setup seats
+  execute_ c "CREATE TABLE IF NOT EXISTS seats (id INTEGER PRIMARY KEY, flight INTEGER, name TEXT, cost INTEGER, FOREIGN KEY(flight) REFERENCES flights(id));"
+  seatsRows <- query_ c "SELECT * FROM seats" :: IO [User]
+  when (null seatsRows) $ foldr (*>) (return ())
+    [ execute_ c "INSERT INTO seats (flight, name, cost) VALUES (1, \"1-A\", 100);"
+    , execute_ c "INSERT INTO seats (flight, name, cost) VALUES (1, \"1-B\", 100);"
+    , execute_ c "INSERT INTO seats (flight, name, cost) VALUES (2, \"2-A\", 100);"
+    , execute_ c "INSERT INTO seats (flight, name, cost) VALUES (2, \"2-B\", 100);"
+    ]
+  -- Setup bookings
+  execute_ c "CREATE TABLE IF NOT EXISTS bookings (id INTEGER PRIMARY KEY, user INTEGER, seat INTEGER, FOREIGN KEY(user) REFERENCES users(id), FOREIGN KEY(seat) REFERENCES seats(id));"
 
-data User = User {_userID :: Int, _email :: T.Text, _name :: T.Text, password :: T.Text }
+data User = User {_userID :: Int, _email :: T.Text, _name :: T.Text, _password :: T.Text }
 
 instance FromRow User where
   fromRow = User <$> field <*> field <*> field <*> field
@@ -32,58 +45,26 @@ instance FromRow User where
 instance ToRow User where
   toRow (User i e n p) = toRow (i, e, n, p)
 
--- mkFlightTable = (`execute_` "CREATE TABLE IF NOT EXISTS Flights (index INTEGER PRIMARY KEY, name TEXT, from TEXT, to TEXT)")
--- data Flight = Flight {_flightIndex :: Int, _flightName:: Text, _flightFrom :: Text, _flightTo :: Text}
--- -- makeLenses ''Flight
+data Flight = Flight {_flightID :: Int, _from :: T.Text, _to :: T.Text, _date :: T.Text }
 
--- instance FromRow Flight where
---   fromRow = Flight <$> field <*> field <*> field <*> field
+instance FromRow Flight where
+  fromRow = Flight <$> field <*> field <*> field <*> field
 
--- instance ToRow Flight where
---   toRow (Flight i n f t) = toRow (i, n, f, t)
+instance ToRow Flight where
+  toRow (Flight i f t d) = toRow (i, f, t, d)
 
--- mkSeatTable = (`execute_` "CREATE TABLE IF NOT EXISTS Seats (index INTEGER PRIMARY KEY, label TEXT, flight INTEGER, to TEXT)")
--- data Seat = Seat {_seatIndex :: Int, _seatLabel :: Text, _seatFlight :: Int, _seatCost :: Int, _seatBooker :: Maybe Int}
--- -- makeLenses ''Seat
+data Seat = Seat {_seatID :: Int, _onFlight :: Int, _seatName :: T.Text, _cost :: Int }
 
--- instance FromRow Seat where
---   fromRow = Seat <$> field <*> field <*> field <*> field <*> field
+instance FromRow Seat where
+  fromRow = Seat <$> field <*> field <*> field <*> field
 
--- instance ToRow Seat where
---   toRow (Seat i l f c b) = toRow (i, l, f, c, b)
+instance ToRow Seat where
+  toRow (Seat i f n c) = toRow (i, f, n, c)
 
--- data Customer = Customer {_customerIndex :: Int, _customerName :: Text, _customerEmail :: Text, _customerPassword :: Text}
--- -- makeLenses ''Customer
+data Booking = Booking {_bookingID :: Int, _userRef :: Int, _seatRef :: Int}
 
--- instance FromRow Customer where
---   fromRow = Customer <$> field <*> field <*> field <*> field
+instance FromRow Booking where
+  fromRow = Booking <$> field <*> field <*> field
 
--- instance ToRow Customer where
---   toRow (Customer i n e p) = toRow (i, n, e, p)
-
--- data ServiceBooking = ServiceBooking {_serviceBookingIndex :: Int, _serviceBookingItem :: Int, _serviceBookingSeat :: Int}
--- -- makeLenses ''ServiceBooking
-
--- instance FromRow ServiceBooking where
---   fromRow = ServiceBooking <$> field <*> field <*> field
-
--- instance ToRow ServiceBooking where
---   toRow (ServiceBooking i b s) = toRow (i, b, s)
-
--- data Service = Service {_serviceIndex :: Int, _serviceName :: Text, _serviceCost :: Int}
--- -- makeLenses ''Service
-
--- instance FromRow Service where
---   fromRow = Service <$> field <*> field <*> field
-
--- instance ToRow Service where
---   toRow (Service i n c) = toRow (i, n, c)
-
--- data Manager = Manager {_managerIndex :: Int, _managerName :: Text, _managerEmail :: Text, _managerPassword :: Text}
--- -- makeLenses ''Manager
-
--- instance FromRow Manager where
---   fromRow = Manager <$> field <*> field <*> field <*> field
-
--- instance ToRow Manager where
---   toRow (Manager i n e p) = toRow (i, n, e, p)
+instance ToRow Booking where
+  toRow (Booking i u s) = toRow (i, u, s)

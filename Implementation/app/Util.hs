@@ -10,3 +10,9 @@ runSqlQuery q d = runQuery (\conn -> query conn q d)
 
 runSqlStmt :: (HasSpock m, SpockConn m ~ Connection, ToRow q) => Query -> q -> m ()
 runSqlStmt q d = runQuery (\conn -> execute conn q d)
+
+runSqlQuery_ :: (HasSpock m, SpockConn m ~ Connection, FromRow r) => Query -> m [r]
+runSqlQuery_ q = runQuery (`query_` q)
+
+runSqlStmt_ :: (HasSpock m, SpockConn m ~ Connection) => Query -> m ()
+runSqlStmt_ q = runQuery (`execute_` q)

@@ -11,8 +11,10 @@ import Control.Monad (liftM)
 import Data.HVect
 import SiteBuilders
 import Web.Spock
+import Db
+import Util
 
-authHook :: Handler (HVect xs) (HVect ((UserId, User) ': xs))
+authHook :: Handler (HVect xs) (HVect (User ': xs))
 authHook = maybeUser $ \mUser -> do
   oldCtx <- getContext
   case mUser of
@@ -27,24 +29,16 @@ loggedOutHook =
          Nothing -> return (LoggedOut :&: oldCtx)
          Just _ -> redirect "/"
 
-maybeUser :: (Maybe (UserId, User) -> Handler ctx a) -> Handler ctx a
+maybeUser :: (Maybe User -> Handler ctx a) -> Handler ctx a
 maybeUser action = do
   sess <- readSession
   case sess of
     Nothing -> action Nothing
-    Just sid -> action $ Just (undefined, undefined)
+    Just sid -> do
+      userQ <- runSqlQuery "SELECT * FROM users WHERE id = ?" [sid]
+      case userQ of
+        [u@User {}] -> do
+          action $ Just u
+        _ -> action Nothing
 
-data IsCustomer = IsCustomer
-
-data UserId = UserId
-data User = User
 data LoggedOut = LoggedOut
-
-userIsCustomer :: User -> Bool
-userIsCustomer _ = True
-
-customerHook :: ListContains n (UserId, User) xs => Handler (HVect xs) (HVect (IsCustomer ': xs))
-customerHook = do
-  (_ :: UserId, user) <- liftM findFirst getContext
-  oldCtx <- getContext
-  if userIsCustomer user then return (IsCustomer :&: oldCtx) else noAccessPage "You don't have enough rights, sorry"
