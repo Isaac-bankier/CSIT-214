@@ -6,15 +6,18 @@ module Main where
 import Basics
 import Data.HVect
 import Database.SQLite.Simple
+import Db
 import Login
 import SiteBuilders
 import UserManagement
 import Web.Spock
 import Web.Spock.Config
 
-
 main :: IO ()
 main = do
+  conn <- open "/tmp/test.db"
+  initDb conn
+  close conn
   cfg <- defaultSpockCfg Nothing (PCConn $ ConnBuilder (open "/tmp/test.db") close (PoolCfg 1 1 1)) ()
   runSpock 8000 $ spock cfg app
 
@@ -23,8 +26,7 @@ baseHook = return HNil
 
 app :: Server ()
 app = prehook baseHook $ do
-  get "/" $ mkSite "Hello"
-  get "/about" $ mkSite "About"
-  getpost "/login" login
-  getpost "/logout" logout
-  prehook authHook $ get "/authorised" $ mkSite "Authorised"
+  prehook authHook $ get "/" $ mkSite "Hello"
+  prehook authHook $ get "/about" $ mkSite "About"
+  prehook authHook $ getpost "/logout" logout
+  prehook loggedOutHook $ getpost "/login" login

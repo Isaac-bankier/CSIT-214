@@ -16,8 +16,16 @@ authHook :: Handler (HVect xs) (HVect ((UserId, User) ': xs))
 authHook = maybeUser $ \mUser -> do
   oldCtx <- getContext
   case mUser of
-    Nothing -> noAccessPage "Unknown user. Login first!"
+    Nothing -> redirect "/login"
     Just val -> return (val :&: oldCtx)
+
+loggedOutHook :: Handler (HVect xs) (HVect (LoggedOut ': xs))
+loggedOutHook =
+    maybeUser $ \mUser ->
+    do oldCtx <- getContext
+       case mUser of
+         Nothing -> return (LoggedOut :&: oldCtx)
+         Just _ -> redirect "/"
 
 maybeUser :: (Maybe (UserId, User) -> Handler ctx a) -> Handler ctx a
 maybeUser action = do
@@ -30,6 +38,7 @@ data IsCustomer = IsCustomer
 
 data UserId = UserId
 data User = User
+data LoggedOut = LoggedOut
 
 userIsCustomer :: User -> Bool
 userIsCustomer _ = True
