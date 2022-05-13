@@ -18,6 +18,7 @@ import SiteBuilders
 import Util
 import Web.Spock
 import UserManagement
+import Database.SQLite.Simple
 
 myFlights :: Handler (HVect xs) a
 myFlights = maybeUser $ \case
@@ -28,11 +29,22 @@ myFlights = maybeUser $ \case
       _ -> table_ $ foldr (*>) (return ()) $ fmap displayBooking flights
   Nothing -> redirect "/login"
 
-displayBooking :: Monad m => Booking -> HtmlT m ()
+displayBooking :: (Monad m, HasSpock m, SpockConn m ~ Connection) => Booking -> HtmlT m ()
 displayBooking b = do
   tr_ $ do
-    td_ $ toHtml $ show $ _userRef b
-    td_ $ toHtml $ show $ _seatRef b
-    td_ $ form_ [method_ "get"] $ do
-      input_ [type_ "hidden", name_ "bookingId", value_ $ T.pack $ show $ _bookingID b]
-      input_ [type_ "submit", value_ "Cancel Booking"]
+    s <- lift $ runSqlQuery "SELECT * FROM seats WHERE id = ?" [_seatRef b]
+    case s of
+      [s'@Seat {}] -> do
+        f <- lift $ runSqlQuery "SELECT * FROM flights WHERE id = ?" [_onFlight s']
+        case f of
+          [f'@Flight {}] -> do
+            td_ $ toHtml $ _from f'
+            td_ $ toHtml $ _to f'
+            td_ $ toHtml $ _date f'
+            td_ $ toHtml $ _seatName s'
+            td_ $ toHtml $ show $ _cost s'
+            td_ $ form_ [method_ "get"] $ do
+              input_ [type_ "hidden", name_ "bookingId", value_ $ T.pack $ show $ _bookingID b]
+              input_ [type_ "submit", value_ "Cancel Booking"]
+          _ -> error "The database reached an invalid state."
+      _ -> error "The database reached an invalid state."
