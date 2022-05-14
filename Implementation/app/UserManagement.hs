@@ -14,6 +14,9 @@ import Web.Spock
 import Db
 import Util
 
+baseHook :: Handler () (HVect '[])
+baseHook = return HNil
+
 authHook :: Handler (HVect xs) (HVect (User ': xs))
 authHook = maybeUser $ \mUser -> do
   oldCtx <- getContext

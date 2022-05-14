@@ -20,14 +20,14 @@ initDb c = do
   when (null userRows) $ execute_ c "INSERT INTO users (email, name, password) VALUES (\"admin@admin.com\", \"admin\", \"pass\");"
   -- Setup flights
   execute_ c "CREATE TABLE IF NOT EXISTS flights (id INTEGER PRIMARY KEY, fromCity TEXT, toCity TEXT, date TEXT);"
-  flightRows <- query_ c "SELECT * FROM flights" :: IO [User]
+  flightRows <- query_ c "SELECT * FROM flights" :: IO [Flight]
   when (null flightRows) $ foldr (*>) (return ())
     [ execute_ c "INSERT INTO flights (fromCity, toCity, date) VALUES (\"Sydney\", \"Melbourne\", \"13-07-2021\");"
     , execute_ c "INSERT INTO flights (fromCity, toCity, date) VALUES (\"Melbourne\", \"Sydney\", \"14-07-2021\");"
     ]
   -- Setup seats
   execute_ c "CREATE TABLE IF NOT EXISTS seats (id INTEGER PRIMARY KEY, flight INTEGER, name TEXT, cost INTEGER, FOREIGN KEY(flight) REFERENCES flights(id));"
-  seatsRows <- query_ c "SELECT * FROM seats" :: IO [User]
+  seatsRows <- query_ c "SELECT * FROM seats" :: IO [Seat]
   when (null seatsRows) $ foldr (*>) (return ())
     [ execute_ c "INSERT INTO seats (flight, name, cost) VALUES (1, \"1-A\", 100);"
     , execute_ c "INSERT INTO seats (flight, name, cost) VALUES (1, \"1-B\", 100);"
