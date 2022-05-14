@@ -31,7 +31,7 @@ bookFlight = do
         h1_ "Please select a flight to book"
         table_ $ foldr (*>) (return ()) $ fmap displayFight flights
       Just fid -> mkSite $ scaffold $ do
-        seats <- lift $ runSqlQuery "SELECT * FROM seats WHERE flight = ?" [fid]
+        seats <- lift $ runSqlQuery "SELECT * FROM seats WHERE flight = ? AND NOT EXISTS (SELECT * FROM bookings WHERE seats.id = bookings.seat)" [fid]
         h1_ "Please select a seat to book"
         table_ $ foldr (*>) (return ()) $ fmap displaySeat seats
     else maybeUser $ \case
