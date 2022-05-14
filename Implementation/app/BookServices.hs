@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE LambdaCase #-}
 
-module BookServices ( bookFlight ) where
+module BookServices ( bookService ) where
 
 import Basics
 import Control.Applicative
@@ -18,49 +18,62 @@ import SiteBuilders
 import Util
 import Web.Spock
 import UserManagement
+import Database.SQLite.Simple
 
-bookFlight :: Server (HVect xs)
-bookFlight = do
-  prehook authHook $ get "/bookFlights" findFlight
-  prehook authHook $ get ("/bookFlights" <//> var) $ \s -> findSeat s
-  prehook authHook $ post "/bookFlights" $ do
-    sid <- param' "seatId"
-    makeBooking sid
+bookService :: Server (HVect xs)
+bookService = do
+  prehook authHook $ get "/bookServices" findItem
+  prehook authHook $ get ("/bookServices" <//> var) $ \s -> findBooking s
+  prehook authHook $ post "/bookServices" $ do
+    sid <- param' "serviceId"
+    bid <- param' "bookingId"
+    makeServiceBooking sid bid
 
-findFlight :: Handler (HVect xs) a
-findFlight = mkSite $ scaffold $ do
-  flights <- lift $ runSqlQuery_ "SELECT * FROM flights"
-  h1_ "Please select a flight to book"
-  table_ $ foldr (*>) (return ()) $ fmap displayFight flights
+findItem :: Handler (HVect xs) a
+findItem = mkSite $ scaffold $ do
+  services <- lift $ runSqlQuery_ "SELECT * FROM services"
+  h1_ "Please select an item to book"
+  table_ $ foldr (*>) (return ()) $ fmap displayService services
 
-findSeat :: Int -> Handler (HVect xs) a
-findSeat fid = mkSite $ scaffold $ do
-  seats <- lift $ runSqlQuery "SELECT * FROM seats WHERE flight = ? AND NOT EXISTS (SELECT * FROM bookings WHERE seats.id = bookings.seat)" [fid]
-  h1_ "Please select a seat to book"
-  table_ $ foldr (*>) (return ()) $ fmap displaySeat seats
-
-makeBooking :: Int -> Handler (HVect xs) a
-makeBooking sid = maybeUser $ \case
-  Just u -> do
-    runSqlStmt "INSERT INTO bookings (user, seat) VALUES (?, ?)" (_userID u, sid)
-    redirect "/myFlights"
+findBooking :: Int -> Handler (HVect xs) a
+findBooking sid = maybeUser $ \case
+  Just u -> mkSite $ scaffold $ do
+    bookings <- lift $ runSqlQuery "SELECT * FROM bookings WHERE user = ?" [_userID u]
+    h1_ "Please select a seat to book"
+    table_ $ foldr (*>) (return ()) $ fmap (displayBooking sid) bookings
   Nothing -> redirect "/login"
 
+makeServiceBooking :: Int -> Int -> Handler (HVect xs) a
+makeServiceBooking sid bid = do
+  runSqlStmt "INSERT INTO service_bookings (booking, service) VALUES (?, ?)" (bid, sid)
+  redirect "/myFlights"
 
-displayFight :: Monad m => Flight -> HtmlT m ()
-displayFight f = do
+displayService :: Monad m => Service -> HtmlT m ()
+displayService s = do
   tr_ $ do
-    td_ $ toHtml $ _from f
-    td_ $ toHtml $ _to f
-    td_ $ toHtml $ _date f
-    td_ $ form_ [method_ "get", action_ $ T.concat ["/bookFlights/", T.pack $ show $ _flightID f]] $ do
+    td_ $ toHtml $ _serviceName s
+    td_ $ toHtml $ _description s
+    td_ $ toHtml $ show $ _serviceCost s
+    td_ $ form_ [method_ "get", action_ $ T.concat ["/bookServices/", T.pack $ show $ _serviceID s]] $ do
       input_ [type_ "submit", value_ "Select Seat"]
 
-displaySeat :: Monad m => Seat -> HtmlT m ()
-displaySeat s = do
+displayBooking :: (Monad m, HasSpock m, SpockConn m ~ Connection) => Int -> Booking -> HtmlT m ()
+displayBooking sid b = do
   tr_ $ do
-    td_ $ toHtml $ _seatName s
-    td_ $ toHtml $ show $ _cost s
-    td_ $ form_ [method_ "post", action_ "/bookFlights/"] $ do
-      input_ [type_ "hidden", name_ "seatId", value_ $ T.pack $ show $ _seatID s]
-      input_ [type_ "submit", value_ "Purchase Seat"]
+    s <- lift $ runSqlQuery "SELECT * FROM seats WHERE id = ?" [_seatRef b]
+    case s of
+      [s'@Seat {}] -> do
+        f <- lift $ runSqlQuery "SELECT * FROM flights WHERE id = ?" [_onFlight s']
+        case f of
+          [f'@Flight {}] -> do
+            td_ $ toHtml $ _from f'
+            td_ $ toHtml $ _to f'
+            td_ $ toHtml $ _date f'
+            td_ $ toHtml $ _seatName s'
+            td_ $ toHtml $ show $ _cost s'
+            td_ $ form_ [method_ "post", action_ "/bookServices"] $ do
+              input_ [type_ "hidden", name_ "serviceId", value_ $ T.pack $ show sid]
+              input_ [type_ "hidden", name_ "bookingId", value_ $ T.pack $ show $ _bookingID b]
+              input_ [type_ "submit", value_ "Order Service"]
+          _ -> error "The database reached an invalid state."
+      _ -> error "The database reached an invalid state."

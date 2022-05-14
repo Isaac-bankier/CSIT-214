@@ -14,6 +14,7 @@ import Web.Spock.Config
 import Home
 import BookFlight
 import MyFlights
+import BookServices
 
 main :: IO ()
 main = do
@@ -28,4 +29,5 @@ app = prehook baseHook $ do
   prehook authHook $ get "/" home
   myFlights
   bookFlight
+  bookService
   login
