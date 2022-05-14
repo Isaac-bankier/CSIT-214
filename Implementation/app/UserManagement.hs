@@ -7,9 +7,7 @@
 module UserManagement where
 
 import Basics
-import Control.Monad (liftM)
 import Data.HVect
-import SiteBuilders
 import Web.Spock
 import Db
 import Util

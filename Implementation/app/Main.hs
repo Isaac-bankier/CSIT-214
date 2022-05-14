@@ -4,7 +4,6 @@
 module Main where
 
 import Basics
-import Data.HVect
 import Database.SQLite.Simple
 import Db
 import Login

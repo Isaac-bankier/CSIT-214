@@ -6,7 +6,6 @@
 module MyFlights ( myFlights ) where
 
 import Basics
-import Control.Applicative
 import Control.Monad.Trans
 import Data.HVect hiding (singleton)
 import qualified Data.Text as T

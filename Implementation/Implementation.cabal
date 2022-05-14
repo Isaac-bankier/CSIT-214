@@ -10,8 +10,6 @@ executable Implementation
     main-is: Main.hs
     build-depends: base ^>=4.14.3.0
                  , Spock ^>= 0.14.0.0
-                 , Spock-core
-                 , wai
                  , text ^>= 2.0
                  , mtl ^>= 2.2.2
                  , http-types ^>= 0.12.3

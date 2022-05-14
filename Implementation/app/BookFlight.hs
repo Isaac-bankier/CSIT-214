@@ -6,14 +6,11 @@
 module BookFlight ( bookFlight ) where
 
 import Basics
-import Control.Applicative
 import Control.Monad.Trans
 import Data.HVect hiding (singleton)
 import qualified Data.Text as T
 import Db
 import Lucid
-import Network.HTTP.Types (methodGet)
-import Network.Wai
 import SiteBuilders
 import Util
 import Web.Spock

@@ -5,13 +5,10 @@
 module Login ( login ) where
 
 import Basics
-import Control.Applicative
 import Data.HVect
 import qualified Data.Text as T
 import Db
 import Lucid
-import Network.HTTP.Types (methodGet)
-import Network.Wai
 import SiteBuilders
 import Util
 import Web.Spock
