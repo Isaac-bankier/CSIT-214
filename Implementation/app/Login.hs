@@ -2,10 +2,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Login
-  ( login
-  , logout
-  ) where
+module Login ( login ) where
 
 import Basics
 import Control.Applicative
@@ -18,30 +15,35 @@ import Network.Wai
 import SiteBuilders
 import Util
 import Web.Spock
+import UserManagement
 
-login :: Handler (HVect xs) a
+login :: Server (HVect xs)
 login = do
-  method <- requestMethod <$> request
-  if method == methodGet
-    then mkSite $ do
-    p_ "Hello please login"
-    form_ [method_ "post"] $ do
-      input_ [type_ "email", name_ "username"]
-      input_ [type_ "password", name_ "password"]
-      input_ [type_ "submit", value_ "Login"]
-    else do
-    u <- param "username" :: Handler (HVect xs) (Maybe T.Text)
-    p <- param "password" :: Handler (HVect xs) (Maybe T.Text)
-    case liftA2 (,) u p  of
-      Just (u', p') -> do
-        userQ <- runSqlQuery "SELECT * FROM users WHERE email = ? AND password = ?" [u', p']
-        case userQ of
-          [User uid _ _ _] -> do
-            sessionRegenerateId
-            writeSession $ Just uid
-            redirect "/"
-          _ -> redirect "/login"
-      Nothing -> redirect "/login"
+  prehook authHook $ get "/logout" logout
+  prehook loggedOutHook $ get "/login" $ loginPage False
+  prehook loggedOutHook $ get "/loginFailed" $ loginPage True
+  prehook loggedOutHook $ post "/login" $ do
+    u <- param' "username"
+    p <- param' "password"
+    loginAction u p
+
+loginPage :: Bool -> Handler (HVect xs) a
+loginPage failed = mkSite $ do
+  if failed then h1_ "Login failed" else h1_ "Hello please login"
+  form_ [method_ "post"] $ do
+    input_ [type_ "email", name_ "username"]
+    input_ [type_ "password", name_ "password"]
+    input_ [type_ "submit", value_ "Login"]
+
+loginAction :: T.Text -> T.Text -> Handler (HVect xs) a
+loginAction u p = do
+  userQ <- runSqlQuery "SELECT * FROM users WHERE email = ? AND password = ?" [u, p]
+  case userQ of
+    [User uid _ _ _] -> do
+      sessionRegenerateId
+      writeSession $ Just uid
+      redirect "/"
+    _ -> redirect "/loginFailed"
 
 logout :: Handler (HVect xs) a
 logout = do

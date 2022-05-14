@@ -27,6 +27,5 @@ app :: Server ()
 app = prehook baseHook $ do
   prehook authHook $ get "/" home
   myFlights
-  prehook authHook $ getpost "/bookFlights" bookFlight
-  prehook authHook $ get "/logout" logout
-  prehook loggedOutHook $ getpost "/login" login
+  bookFlight
+  login
