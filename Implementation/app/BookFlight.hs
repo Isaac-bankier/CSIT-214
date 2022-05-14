@@ -40,7 +40,7 @@ bookFlight = do
       case sid of
         Just sid' -> do
           runSqlStmt "INSERT INTO bookings (user, seat) VALUES (?, ?)" (_userID u, sid')
-          redirect "/"
+          redirect "/myFlights"
         Nothing -> redirect "/bookFlight"
     Nothing -> redirect "/login"
 
