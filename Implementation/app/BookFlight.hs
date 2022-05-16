@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE TypeOperators #-}
 
 module BookFlight ( bookFlight ) where
 
@@ -11,38 +11,50 @@ import Data.HVect hiding (singleton)
 import qualified Data.Text as T
 import Db
 import Lucid
+    ( action_,
+      form_,
+      h1_,
+      input_,
+      method_,
+      name_,
+      table_,
+      td_,
+      tr_,
+      type_,
+      value_,
+      HtmlT,
+      ToHtml(toHtml) )
 import SiteBuilders
 import Util
 import Web.Spock
 import UserManagement
+import qualified Data.HVect as H
 
 bookFlight :: Server (HVect xs)
 bookFlight = do
-  prehook authHook $ get "/bookFlights" findFlight
-  prehook authHook $ get ("/bookFlights" <//> var) $ \s -> findSeat s
-  prehook authHook $ post "/bookFlights" $ do
+  prehook customerHook $ get "/bookFlights" findFlight
+  prehook customerHook $ get ("/bookFlights" <//> var) $ \s -> findSeat s
+  prehook customerHook $ post "/bookFlights" $ do
     sid <- param' "seatId"
     makeBooking sid
 
-findFlight :: Handler (HVect xs) a
+findFlight :: Handler (HVect (Customer ': xs)) a
 findFlight = mkSite $ scaffold $ do
   flights <- lift $ runSqlQuery_ "SELECT * FROM flights"
   h1_ "Please select a flight to book"
   table_ $ foldr (*>) (return ()) $ fmap displayFight flights
 
-findSeat :: Int -> Handler (HVect xs) a
+findSeat :: Int -> Handler (HVect (Customer ': xs)) a
 findSeat fid = mkSite $ scaffold $ do
   seats <- lift $ runSqlQuery "SELECT * FROM seats WHERE flight = ? AND NOT EXISTS (SELECT * FROM bookings WHERE seats.id = bookings.seat)" [fid]
   h1_ "Please select a seat to book"
   table_ $ foldr (*>) (return ()) $ fmap displaySeat seats
 
-makeBooking :: Int -> Handler (HVect xs) a
-makeBooking sid = maybeUser $ \case
-  Just u -> do
-    runSqlStmt "INSERT INTO bookings (user, seat) VALUES (?, ?)" (_userID u, sid)
-    redirect "/myFlights"
-  Nothing -> redirect "/login"
-
+makeBooking :: Int -> Handler (HVect (Customer ': xs)) a
+makeBooking sid = do
+  u <- H.head <$> getContext
+  runSqlStmt "INSERT INTO bookings (user, seat) VALUES (?, ?)" (_userID u, sid)
+  redirect "/myFlights"
 
 displayFight :: Monad m => Flight -> HtmlT m ()
 displayFight f = do

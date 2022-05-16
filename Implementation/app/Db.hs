@@ -19,7 +19,7 @@ initDb :: Connection -> IO ()
 initDb c = do
   needsData <- fmap null (query_ c "SELECT name FROM sqlite_master" :: IO [[T.Text]])
   -- Setup users
-  execute_ c "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, name TEXT, password TEXT);"
+  execute_ c "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, name TEXT, password TEXT, role TEXT);"
   -- Setup flights
   execute_ c "CREATE TABLE IF NOT EXISTS flights (id INTEGER PRIMARY KEY, fromCity TEXT, toCity TEXT, date TEXT);"
   -- Setup seats
@@ -34,7 +34,7 @@ initDb c = do
 
 addData :: Connection -> IO ()
 addData c = do
-  let users = [ ("iwb435@uowmail.edu.au" :: T.Text, "Isaac Bankier" :: T.Text, "pass" :: T.Text)
+  let users = [ ("iwb435@uowmail.edu.au" :: T.Text, "Isaac Bankier" :: T.Text, "pass" :: T.Text, "customer" :: T.Text)
               ]
   forM_ users $ \d -> do
     execute c "INSERT INTO users (email, name, password) VALUES (?, ?, ?);" d
@@ -63,13 +63,13 @@ addData c = do
   forM_ services $ \d -> do
     execute c "INSERT INTO services (name, description, cost) VALUES (?, ?, ?);" d
   
-data User = User {_userID :: Int, _email :: T.Text, _name :: T.Text, _password :: T.Text }
+data User = User {_userID :: Int, _email :: T.Text, _name :: T.Text, _password :: T.Text , _role :: T.Text}
 
 instance FromRow User where
-  fromRow = User <$> field <*> field <*> field <*> field
+  fromRow = User <$> field <*> field <*> field <*> field <*> field
 
 instance ToRow User where
-  toRow (User i e n p) = toRow (i, e, n, p)
+  toRow (User i e n p r) = toRow (i, e, n, p, r)
 
 data Flight = Flight {_flightID :: Int, _from :: T.Text, _to :: T.Text, _date :: T.Text }
 

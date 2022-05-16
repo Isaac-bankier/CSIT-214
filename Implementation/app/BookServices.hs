@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE TypeOperators #-}
 
 module BookServices ( bookService ) where
 
@@ -16,31 +16,32 @@ import Util
 import Web.Spock
 import UserManagement
 import Database.SQLite.Simple
+import qualified Data.HVect as H
 
 bookService :: Server (HVect xs)
 bookService = do
-  prehook authHook $ get "/bookServices" findItem
-  prehook authHook $ get ("/bookServices" <//> var) $ \s -> findBooking s
-  prehook authHook $ post "/bookServices" $ do
+  prehook customerHook $ get "/bookServices" findItem
+  prehook customerHook $ get ("/bookServices" <//> var) $ \s -> findBooking s
+  prehook customerHook $ post "/bookServices" $ do
     sid <- param' "serviceId"
     bid <- param' "bookingId"
     makeServiceBooking sid bid
 
-findItem :: Handler (HVect xs) a
+findItem :: Handler (HVect (Customer ': xs)) a
 findItem = mkSite $ scaffold $ do
   services <- lift $ runSqlQuery_ "SELECT * FROM services"
   h1_ "Please select an item to book"
   table_ $ foldr (*>) (return ()) $ fmap displayService services
 
-findBooking :: Int -> Handler (HVect xs) a
-findBooking sid = maybeUser $ \case
-  Just u -> mkSite $ scaffold $ do
+findBooking :: Int -> Handler (HVect (Customer ': xs)) a
+findBooking sid = do
+  u <- H.head <$> getContext
+  mkSite $ scaffold $ do
     bookings <- lift $ runSqlQuery "SELECT * FROM bookings WHERE user = ?" [_userID u]
     h1_ "Please select a seat to book"
     table_ $ foldr (*>) (return ()) $ fmap (displayBooking sid) bookings
-  Nothing -> redirect "/login"
 
-makeServiceBooking :: Int -> Int -> Handler (HVect xs) a
+makeServiceBooking :: Int -> Int -> Handler (HVect (Customer ': xs)) a
 makeServiceBooking sid bid = do
   runSqlStmt "INSERT INTO service_bookings (booking, service) VALUES (?, ?)" (bid, sid)
   redirect "/myFlights"

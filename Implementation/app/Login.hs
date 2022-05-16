@@ -36,13 +36,22 @@ loginAction :: T.Text -> T.Text -> Handler (HVect xs) a
 loginAction u p = do
   userQ <- runSqlQuery "SELECT * FROM users WHERE email = ? AND password = ?" [u, p]
   case userQ of
-    [User uid _ _ _] -> do
+    [u'@(User _ _ _ _ "customer")] -> do
       sessionRegenerateId
-      writeSession $ Just uid
+      writeSession $ Just $ IsCustomer u'
+      redirect "/"
+    [u'@(User _ _ _ _ "employee")] -> do
+      sessionRegenerateId
+      writeSession $ Just $ IsEmployee u'
       redirect "/"
     _ -> redirect "/loginFailed"
 
 logout :: Handler (HVect xs) a
 logout = do
-  writeSession Nothing
+  s <- readSession
+  case s of
+    Nothing -> writeSession Nothing
+    Just (IsCustomer _) -> writeSession Nothing
+    Just (IsEmployee _) -> writeSession Nothing
+    Just (IsActingCustomer (ActingCustomer e _)) -> writeSession $ Just $ IsEmployee e
   redirect "/"

@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE TypeOperators #-}
 
 module MyFlights ( myFlights ) where
 
@@ -16,22 +16,24 @@ import Util
 import Web.Spock
 import UserManagement
 import Database.SQLite.Simple
+import qualified Data.HVect as H
 
 myFlights :: Server (HVect xs)
 myFlights = do
-  prehook authHook $ get "/myFlights" listFlights
-  prehook authHook $ post "/cancelBooking" $ do
+  prehook customerHook $ get "/myFlights" listFlights
+  prehook customerHook $ post "/cancelBooking" $ do
     bid <- param' "bookingId"
     cancelBooking bid
-  prehook authHook $ post "/cancelServiceBooking" $ do
+  prehook customerHook $ post "/cancelServiceBooking" $ do
     sbid <- param' "serviceBookingId"
     cancelServiceBooking sbid
 
-listFlights :: Handler (HVect xs) a
-listFlights = maybeUser $ \case
-  Just u -> mkSite $ scaffold $ do
-    flights <- lift $ runSqlQuery "SELECT * FROM bookings WHERE user = ?" [_userID u]
-    services <- lift $ runSqlQuery "SELECT * FROM service_bookings WHERE EXISTS (SELECT * FROM bookings WHERE bookings.user = ? AND service_bookings.booking = bookings.id)" [_userID u]
+listFlights :: Handler (HVect (Customer ': xs)) a
+listFlights = do
+  u <- H.head <$> getContext
+  flights <- lift $ runSqlQuery "SELECT * FROM bookings WHERE user = ?" [_userID u]
+  services <- lift $ runSqlQuery "SELECT * FROM service_bookings WHERE EXISTS (SELECT * FROM bookings WHERE bookings.user = ? AND service_bookings.booking = bookings.id)" [_userID u]
+  mkSite $ scaffold $ do
     h1_ "Flights"
     case flights of
       [] -> h2_ "You haven't booked any flights."
@@ -40,9 +42,8 @@ listFlights = maybeUser $ \case
     case services of
       [] -> h2_ "You haven't booked any services."
       _ -> table_ $ foldr (*>) (return ()) $ fmap displayService services
-  Nothing -> redirect "/login"
 
-cancelBooking :: Int -> Handler (HVect xs) a
+cancelBooking :: Int -> Handler (HVect (Customer ': xs)) a
 cancelBooking bid = do
   runSqlStmt "DELETE FROM bookings WHERE id = ?" [bid]
   redirect "/myFlights"
