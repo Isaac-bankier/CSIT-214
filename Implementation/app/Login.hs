@@ -13,6 +13,7 @@ import SiteBuilders
 import Util
 import Web.Spock
 import UserManagement
+import Control.Monad (when)
 
 login :: Server (HVect xs)
 login = do
@@ -26,11 +27,22 @@ login = do
 
 loginPage :: Bool -> Handler (HVect xs) a
 loginPage failed = mkSite $ do
-  if failed then h1_ "Login failed" else h1_ "Hello please login"
-  form_ [method_ "post"] $ do
-    input_ [type_ "email", name_ "username"]
-    input_ [type_ "password", name_ "password"]
-    input_ [type_ "submit", value_ "Login"]
+  div_ [id_ "login-box"] $ do
+    div_ [id_ "login"] $ do
+      h1_ "Login"
+      when failed $ h2_ [id_ "login-failure"] "Login failed"
+      form_ [method_ "post"] $ do
+        input_ [type_ "email", placeholder_ "Email", name_ "username"]
+        input_ [type_ "password", placeholder_ "Password", name_ "password"]
+        input_ [type_ "submit", value_ "Login"]
+    div_ [id_ "register"] $ do
+      h1_ "Register"
+      form_ [method_ "post"] $ do
+        input_ [type_ "email", placeholder_ "Name", name_ "username"]
+        input_ [type_ "email", placeholder_ "Email", name_ "username"]
+        input_ [type_ "password", placeholder_ "Password", name_ "password"]
+        input_ [type_ "password", placeholder_ "Password, Again", name_ "password"]
+        input_ [type_ "submit", value_ "Register"]
 
 loginAction :: T.Text -> T.Text -> Handler (HVect xs) a
 loginAction u p = do

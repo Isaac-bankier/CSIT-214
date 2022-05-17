@@ -22,6 +22,9 @@ mkSite main = lucidT $ do
   html_ $ do
     head_ $ do
       link_ [rel_ "stylesheet", href_ "/styles.css"]
+      link_ [rel_ "preconnect", href_ "https://fonts.googleapis.com"]
+      link_ [rel_ "preconnect", href_ "https://fonts.gstatic.com", crossorigin_ ""]
+      link_ [href_ "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap", rel_ "stylesheet"] 
     body_ $ do
       main
 
