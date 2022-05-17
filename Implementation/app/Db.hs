@@ -34,10 +34,12 @@ initDb c = do
 
 addData :: Connection -> IO ()
 addData c = do
-  let users = [ ("iwb435@uowmail.edu.au" :: T.Text, "Isaac Bankier" :: T.Text, "pass" :: T.Text, "customer" :: T.Text)
+  let users = [ ("alice@example.com" :: T.Text, "Alice" :: T.Text, "pass" :: T.Text, "customer" :: T.Text)
+              , ("bob@example.com" :: T.Text, "Bob" :: T.Text, "pass" :: T.Text, "customer" :: T.Text)
+              , ("eric@example.com" :: T.Text, "Eric" :: T.Text, "pass" :: T.Text, "employee" :: T.Text)
               ]
   forM_ users $ \d -> do
-    execute c "INSERT INTO users (email, name, password) VALUES (?, ?, ?);" d
+    execute c "INSERT INTO users (email, name, password, role) VALUES (?, ?, ?, ?);" d
   let flights = do
         let cities = ["Sydney" :: T.Text, "Melbourne", "Stockholm", "Las Vegas", "Constantinople"]
         from <- cities
