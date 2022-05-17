@@ -15,6 +15,7 @@ import BookFlight
 import MyFlights
 import BookServices
 import EmployeeAct
+import Css
 
 main :: IO ()
 main = do
@@ -26,6 +27,7 @@ main = do
 
 app :: Server ()
 app = prehook baseHook $ do
+  css
   prehook authHook $ get "/" home
   myFlights
   bookFlight
