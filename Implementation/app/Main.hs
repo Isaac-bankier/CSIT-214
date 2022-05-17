@@ -14,6 +14,7 @@ import Home
 import BookFlight
 import MyFlights
 import BookServices
+import EmployeeAct
 
 main :: IO ()
 main = do
@@ -29,4 +30,5 @@ app = prehook baseHook $ do
   myFlights
   bookFlight
   bookService
+  employeeAct
   login

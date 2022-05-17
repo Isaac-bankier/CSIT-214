@@ -6,17 +6,15 @@
 module EmployeeAct ( employeeAct ) where
 
 import Basics
-import Control.Monad.Trans
 import Data.HVect hiding (singleton)
-import qualified Data.Text as T
 import Db
 import Lucid
 import SiteBuilders
 import Util
 import Web.Spock
 import UserManagement
-import Database.SQLite.Simple
 import qualified Data.HVect as H
+import qualified Data.Text as T
 
 employeeAct :: Server (HVect xs)
 employeeAct = do
@@ -26,19 +24,18 @@ employeeAct = do
     switchToCustomer e
 
 actAsCustomer :: Handler (HVect (Employee ': xs)) a
-actAsCustomer = mkSite $ scaffold $ do
+actAsCustomer = employeeScaffold $ do
   h1_ "Please enter a customer email"
-  form_ [method_ "post", action_ "/bookServices"] $ do
+  form_ [method_ "post", action_ "/actAsCustomer"] $ do
     input_ [type_ "email", name_ "email"]
     input_ [type_ "submit", value_ "Act As Customer"]
 
-switchToCustomer :: Int -> Handler (HVect (Employee ': xs)) a
+switchToCustomer :: T.Text -> Handler (HVect (Employee ': xs)) a
 switchToCustomer uid = do
-  userQ <- runSqlQuery "SELECT * FROM users WHERE email = ?" [uid]
+  userQ <- runSqlQuery "SELECT * FROM users WHERE email = ? AND role = \"customer\"" [uid]
   e <- H.head <$> getContext
   case userQ of
-    [c@(User _ _ _ _ "customer")] -> do
-      sessionRegenerateId
+    [c@User {}] -> do
       writeSession $ Just $ IsActingCustomer $ ActingCustomer e c
       redirect "/"
     _ -> redirect "/actAsCustomer"

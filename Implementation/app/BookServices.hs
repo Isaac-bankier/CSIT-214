@@ -28,7 +28,7 @@ bookService = do
     makeServiceBooking sid bid
 
 findItem :: Handler (HVect (Customer ': xs)) a
-findItem = mkSite $ scaffold $ do
+findItem = customerScaffold $ do
   services <- lift $ runSqlQuery_ "SELECT * FROM services"
   h1_ "Please select an item to book"
   table_ $ foldr (*>) (return ()) $ fmap displayService services
@@ -36,7 +36,7 @@ findItem = mkSite $ scaffold $ do
 findBooking :: Int -> Handler (HVect (Customer ': xs)) a
 findBooking sid = do
   u <- H.head <$> getContext
-  mkSite $ scaffold $ do
+  customerScaffold $ do
     bookings <- lift $ runSqlQuery "SELECT * FROM bookings WHERE user = ?" [_userID u]
     h1_ "Please select a seat to book"
     table_ $ foldr (*>) (return ()) $ fmap (displayBooking sid) bookings

@@ -33,7 +33,7 @@ listFlights = do
   u <- H.head <$> getContext
   flights <- lift $ runSqlQuery "SELECT * FROM bookings WHERE user = ?" [_userID u]
   services <- lift $ runSqlQuery "SELECT * FROM service_bookings WHERE EXISTS (SELECT * FROM bookings WHERE bookings.user = ? AND service_bookings.booking = bookings.id)" [_userID u]
-  mkSite $ scaffold $ do
+  customerScaffold $ do
     h1_ "Flights"
     case flights of
       [] -> h2_ "You haven't booked any flights."

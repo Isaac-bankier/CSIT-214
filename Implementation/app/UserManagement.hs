@@ -28,13 +28,6 @@ employeeHook = maybeUser $ \mUser -> do
     Just (IsEmployee e) -> return (e :&: oldCtx)
     _ -> redirect "/login"
 
-actingCustomerHook :: Handler (HVect xs) (HVect (ActingCustomer ': xs))
-actingCustomerHook = maybeUser $ \mUser -> do
-  oldCtx <- getContext
-  case mUser of
-    Just (IsActingCustomer c) -> return (c :&: oldCtx)
-    _ -> redirect "/login"
-
 authHook :: Handler (HVect xs) (HVect (UserMode ': xs))
 authHook = maybeUser $ \mUser -> do
   oldCtx <- getContext

@@ -19,7 +19,7 @@ import qualified Data.Text as T
 home :: Handler (HVect (UserMode ': xs)) a
 home = do
   u <- H.head <$> getContext
-  mkSite $ scaffold $ 
+  scaffold $ 
     case u of
       IsCustomer u' ->  p_ $ toHtml $ T.concat ["Hello, ", _name u']
       IsEmployee u' ->  p_ $ toHtml $ T.concat ["Hello, ", _name u']

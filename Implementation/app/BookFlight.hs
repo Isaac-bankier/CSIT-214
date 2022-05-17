@@ -39,13 +39,13 @@ bookFlight = do
     makeBooking sid
 
 findFlight :: Handler (HVect (Customer ': xs)) a
-findFlight = mkSite $ scaffold $ do
+findFlight = customerScaffold $ do
   flights <- lift $ runSqlQuery_ "SELECT * FROM flights"
   h1_ "Please select a flight to book"
   table_ $ foldr (*>) (return ()) $ fmap displayFight flights
 
 findSeat :: Int -> Handler (HVect (Customer ': xs)) a
-findSeat fid = mkSite $ scaffold $ do
+findSeat fid = customerScaffold $ do
   seats <- lift $ runSqlQuery "SELECT * FROM seats WHERE flight = ? AND NOT EXISTS (SELECT * FROM bookings WHERE seats.id = bookings.seat)" [fid]
   h1_ "Please select a seat to book"
   table_ $ foldr (*>) (return ()) $ fmap displaySeat seats
