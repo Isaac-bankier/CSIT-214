@@ -20,15 +20,15 @@ import qualified Data.HVect as H
 
 bookService :: Server (HVect xs)
 bookService = do
-  prehook customerHook $ get "/bookServices" findItem
+  prehook authHook $ get "/bookServices" findItem
   prehook customerHook $ get ("/bookServices" <//> var) $ \s -> findBooking s
   prehook customerHook $ post "/bookServices" $ do
     sid <- param' "serviceId"
     bid <- param' "bookingId"
     makeServiceBooking sid bid
 
-findItem :: Handler (HVect (Customer ': xs)) a
-findItem = customerScaffold $ do
+findItem :: Handler (HVect (UserMode ': xs)) a
+findItem = scaffold $ do
   services <- lift $ runSqlQuery_ "SELECT * FROM services"
   h1_ "Please select an item to book"
   table_ $ do

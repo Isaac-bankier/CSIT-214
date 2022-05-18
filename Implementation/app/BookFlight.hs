@@ -32,14 +32,14 @@ import qualified Data.HVect as H
 
 bookFlight :: Server (HVect xs)
 bookFlight = do
-  prehook customerHook $ get "/bookFlights" findFlight
-  prehook customerHook $ get ("/bookFlights" <//> var) $ \s -> findSeat s
+  prehook authHook $ get "/bookFlights" findFlight
+  prehook authHook $ get ("/bookFlights" <//> var) $ \s -> findSeat s
   prehook customerHook $ post "/bookFlights" $ do
     sid <- param' "seatId"
     makeBooking sid
 
-findFlight :: Handler (HVect (Customer ': xs)) a
-findFlight = customerScaffold $ do
+findFlight :: Handler (HVect (UserMode ': xs)) a
+findFlight = scaffold $ do
   flights <- lift $ runSqlQuery_ "SELECT * FROM flights"
   h1_ "Please select a flight to book"
   table_ $ do
@@ -50,8 +50,8 @@ findFlight = customerScaffold $ do
       td_ "Book"
     foldr (*>) (return ()) $ fmap displayFight flights
 
-findSeat :: Int -> Handler (HVect (Customer ': xs)) a
-findSeat fid = customerScaffold $ do
+findSeat :: Int -> Handler (HVect (UserMode ': xs)) a
+findSeat fid = scaffold $ do
   seats <- lift $ runSqlQuery "SELECT * FROM seats WHERE flight = ? AND NOT EXISTS (SELECT * FROM bookings WHERE seats.id = bookings.seat)" [fid]
   h1_ "Please select a seat to book"
   table_ $ do

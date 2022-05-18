@@ -49,6 +49,8 @@ employeeScaffold' :: HtmlT (WebStateM Connection SessionVal ()) a -> Handler ctx
 employeeScaffold' main = lucidT $ boilerPlate $ do
   nav_ $ do
     a_ [href_ "/"] "Home"
+    a_ [href_ "/bookFlights"] "Flight Info"
+    a_ [href_ "/bookServices"] "Service Info"
     a_ [href_ "/actAsCustomer"] "Act As Customer"
     a_ [href_ "/logout"] "Logout"
   main_ $ do
