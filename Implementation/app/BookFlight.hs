@@ -42,13 +42,24 @@ findFlight :: Handler (HVect (Customer ': xs)) a
 findFlight = customerScaffold $ do
   flights <- lift $ runSqlQuery_ "SELECT * FROM flights"
   h1_ "Please select a flight to book"
-  table_ $ foldr (*>) (return ()) $ fmap displayFight flights
+  table_ $ do
+    tr_ $ do
+      td_ "From"
+      td_ "To"
+      td_ "Date"
+      td_ "Book"
+    foldr (*>) (return ()) $ fmap displayFight flights
 
 findSeat :: Int -> Handler (HVect (Customer ': xs)) a
 findSeat fid = customerScaffold $ do
   seats <- lift $ runSqlQuery "SELECT * FROM seats WHERE flight = ? AND NOT EXISTS (SELECT * FROM bookings WHERE seats.id = bookings.seat)" [fid]
   h1_ "Please select a seat to book"
-  table_ $ foldr (*>) (return ()) $ fmap displaySeat seats
+  table_ $ do
+    tr_ $ do
+      td_ "Seat"
+      td_ "Cost"
+      td_ "Book"
+    foldr (*>) (return ()) $ fmap displaySeat seats
 
 makeBooking :: Int -> Handler (HVect (Customer ': xs)) a
 makeBooking sid = do
@@ -61,7 +72,7 @@ displayFight f = do
   tr_ $ do
     td_ $ toHtml $ _from f
     td_ $ toHtml $ _to f
-    td_ $ toHtml $ _date f
+    td_ $ toHtml $ _date f    
     td_ $ form_ [method_ "get", action_ $ T.concat ["/bookFlights/", T.pack $ show $ _flightID f]] $ do
       input_ [type_ "submit", value_ "Select Seat"]
 

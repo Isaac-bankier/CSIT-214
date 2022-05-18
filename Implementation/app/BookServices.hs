@@ -45,7 +45,14 @@ findBooking sid = do
   customerScaffold $ do
     bookings <- lift $ runSqlQuery "SELECT * FROM bookings WHERE user = ?" [_userID u]
     h1_ "Please select a seat to book"
-    table_ $ foldr (*>) (return ()) $ fmap (displayBooking sid) bookings
+    table_ $ do
+      tr_ $ do
+        td_ "From"
+        td_ "To"
+        td_ "Date"
+        td_ "Seat"
+        td_ "Book"
+      foldr (*>) (return ()) $ fmap (displayBooking sid) bookings
 
 makeServiceBooking :: Int -> Int -> Handler (HVect (Customer ': xs)) a
 makeServiceBooking sid bid = do
@@ -74,7 +81,6 @@ displayBooking sid b = do
             td_ $ toHtml $ _to f'
             td_ $ toHtml $ _date f'
             td_ $ toHtml $ _seatName s'
-            td_ $ toHtml $ show $ _cost s'
             td_ $ form_ [method_ "post", action_ "/bookServices"] $ do
               input_ [type_ "hidden", name_ "serviceId", value_ $ T.pack $ show sid]
               input_ [type_ "hidden", name_ "bookingId", value_ $ T.pack $ show $ _bookingID b]

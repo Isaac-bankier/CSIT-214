@@ -37,11 +37,28 @@ listFlights = do
     h1_ "Flights"
     case flights of
       [] -> h2_ "You haven't booked any flights."
-      _ -> table_ $ foldr (*>) (return ()) $ fmap displayBooking flights
+      _ -> table_ $ do
+        tr_ $ do
+          td_ "From"
+          td_ "To"
+          td_ "Date"
+          td_ "Seat"
+          td_ "Cost"
+          td_ "Cancel"
+        foldr (*>) (return ()) $ fmap displayBooking flights
     h1_ "Services"
     case services of
       [] -> h2_ "You haven't booked any services."
-      _ -> table_ $ foldr (*>) (return ()) $ fmap displayService services
+      _ -> table_ $ do
+        tr_ $ do
+          td_ "Item"
+          td_ "Description"
+          td_ "From"
+          td_ "To"
+          td_ "Seat"
+          td_ "Cost"
+          td_ "Cancel"
+        foldr (*>) (return ()) $ fmap displayService services
 
 cancelBooking :: Int -> Handler (HVect (Customer ': xs)) a
 cancelBooking bid = do
