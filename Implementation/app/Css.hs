@@ -96,6 +96,7 @@ scaffoldStyles = do
   main_ ? do
     marginTop $ vh 8
     paddingLeft $ rem 1
+    paddingBottom $ vh 8
 
 tableStyles :: Css
 tableStyles = do
@@ -120,5 +121,9 @@ tableStyles = do
     color "#fff"
   tr # hover ? do
     backgroundColor "#dddddd"
+  tr # firstChild # hover ? do
+    backgroundColor "#424250"
   td ? do
-    paddingLeft $ rem 1
+    padding (rem 1) (rem 1) (rem 1) (rem 1)
+  td |> form ? do
+    margin (px 0) (px 0) (px 0) (px 0)

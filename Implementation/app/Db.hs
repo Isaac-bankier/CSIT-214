@@ -41,14 +41,15 @@ addData c = do
   forM_ users $ \d -> do
     execute c "INSERT INTO users (email, name, password, role) VALUES (?, ?, ?, ?);" d
   let flights = do
+        month <- [1 :: Int ..12]
+        day <- [1 :: Int, 5, 13, 17, 21, 25]
         let cities = ["Sydney" :: T.Text, "Melbourne", "Stockholm", "Las Vegas", "Constantinople"]
         from <- cities
         to <- cities
         guard $ from /= to
-        day <- [1 :: Int, 5, 13, 17, 21, 25]
-        month <- [1 :: Int ..12]
         return (from, to, T.concat [T.pack $ show day, "-", T.pack $ show month, "-2022"])
-  forM_ flights $ \d -> do
+  selectFlights <- filterM (const $ randomRIO (0 :: Int, 100) >>= \n -> return (n < 8)) flights
+  forM_ selectFlights $ \d -> do
     execute c "INSERT INTO flights (fromCity, toCity, date) VALUES (?, ?, ?);" d
   let seats = do
         (_, num) <- zip flights [1 :: Int ..]
