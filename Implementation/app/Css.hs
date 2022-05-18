@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedLists #-}
 
 module Css
   ( css
@@ -6,12 +7,7 @@ module Css
 
 import Basics
 import Data.HVect
-import Db
-import Lucid
-import SiteBuilders
-import qualified Data.HVect as H
 import Web.Spock hiding (root, body)
-import qualified Data.Text as T
 import Clay
 import qualified Data.Text.Lazy as T
 import Prelude hiding (rem, div)
@@ -25,12 +21,16 @@ styles = do
   text $ T.toStrict $ render $ do
     mainStyles
     loginStyles
+    scaffoldStyles
+    tableStyles
 
 mainStyles :: Css
 mainStyles = do
   body ? do
     importUrl "'https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap'"
     fontFamily ["Open Sans"] [sansSerif]
+    padding (px 0) (px 0) (px 0) (px 0)
+    margin (px 0) (px 0) (px 0) (px 0)
 
 loginStyles :: Css
 loginStyles = do
@@ -45,7 +45,7 @@ loginStyles = do
     flexDirection row
     border (px 1) solid "#d3d3d3"
     borderRadius (px 8) (px 8) (px 8) (px 8)
-    boxShadow $ pure $ bsColor "#00000059" (shadowWithBlur (px 0) (px 5) (px 15))
+    boxShadow [bsColor "#00000059" (shadowWithBlur (px 0) (px 5) (px 15))]
   div # "#login-box" |> div ? do
     width (pct 100)
     padding (rem 3) (rem 3) (rem 2) (rem 3)
@@ -56,7 +56,7 @@ loginStyles = do
     marginBottom $ rem 3
     paddingBottom $ rem 1
     borderBottom (px 2) solid "#d3d3d3"
-  div # "#login-box" |> div # ":first-child" ? do
+  div # "#login-box" |> div # firstChild ? do
     content $ stringContent ""
     borderRight (px 2) solid "#d3d3d3"
     alignSelf  stretch
@@ -72,5 +72,51 @@ loginStyles = do
     padding (rem 0.4) (rem 0.4) (rem 0.4) (rem 0.4)
     border (px 0) none "#000000"
     borderBottom (px 1) solid "#d3d3d3"
-    boxShadow $ pure none
+    boxShadow [none]
 
+scaffoldStyles :: Css
+scaffoldStyles = do
+  nav ? do
+    width $ vw 100
+    height $ vh 7
+    lineHeight $ vh 7
+    position fixed
+    top $ px 0
+    zIndex 2
+    backgroundColor "#c91718"
+    boxShadow [bsColor "#00000030" (shadowWithBlur (px 0) (px 10) (px 20)), bsColor "#0000003b" (shadowWithBlur (px 0) (px 6) (px 6))]
+  nav |> a ? do
+    color "#fff"
+    fontSize $ rem 1.4
+    marginLeft $ rem 1.2
+    float floatLeft
+    textDecoration none
+  main_ ? do
+    marginTop $ vh 8
+    paddingLeft $ rem 1
+
+tableStyles :: Css
+tableStyles = do
+  table ? do
+    marginLeft auto
+    marginRight auto
+    "table-layout" -: "auto"
+    width $ pct 70
+    borderCollapse collapse
+    borderRadius (px 8)  (px 8) (px 8) (px 8)
+    boxShadow [bsColor "#00000030" (shadowWithBlur (px 0) (px 10) (px 20)), bsColor "#0000003b" (shadowWithBlur (px 0) (px 6) (px 6))]
+  tbody ? do
+    borderRadius (px 8)  (px 8) (px 8) (px 8)
+  tr ? do
+    backgroundColor "#f2f2f2"
+    transition "background" 0.4 easeInOut 0
+    minHeight $ rem 1
+  tr # nthChild "even" ? do
+    backgroundColor "#eaeaea"
+  tr # firstChild ? do
+    backgroundColor "#424250"
+    color "#fff"
+  tr # hover ? do
+    backgroundColor "#dddddd"
+  td ? do
+    paddingLeft $ rem 1

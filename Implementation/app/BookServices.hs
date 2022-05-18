@@ -31,7 +31,13 @@ findItem :: Handler (HVect (Customer ': xs)) a
 findItem = customerScaffold $ do
   services <- lift $ runSqlQuery_ "SELECT * FROM services"
   h1_ "Please select an item to book"
-  table_ $ foldr (*>) (return ()) $ fmap displayService services
+  table_ $ do
+    tr_ $ do
+      td_ "Item Name"
+      td_ "Description"
+      td_ "Price"
+      td_ "Book"
+    foldr (*>) (return ()) $ fmap displayService services
 
 findBooking :: Int -> Handler (HVect (Customer ': xs)) a
 findBooking sid = do

@@ -18,15 +18,7 @@ import Web.Spock.Lucid
 import Data.HVect
 
 mkSite :: HtmlT (WebStateM Connection SessionVal ()) a -> Handler ctx b
-mkSite main = lucidT $ do
-  html_ $ do
-    head_ $ do
-      link_ [rel_ "stylesheet", href_ "/styles.css"]
-      link_ [rel_ "preconnect", href_ "https://fonts.googleapis.com"]
-      link_ [rel_ "preconnect", href_ "https://fonts.gstatic.com", crossorigin_ ""]
-      link_ [href_ "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap", rel_ "stylesheet"] 
-    body_ $ do
-      main
+mkSite main = lucidT $ boilerPlate main
 
 scaffold :: HtmlT (WebStateM Connection SessionVal ()) a -> Handler (HVect (UserMode ': xs)) b
 scaffold main = do
@@ -40,7 +32,7 @@ customerScaffold :: HtmlT (WebStateM Connection SessionVal ()) a -> Handler (HVe
 customerScaffold = customerScaffold'
 
 customerScaffold' :: HtmlT (WebStateM Connection SessionVal ()) a -> Handler ctx b
-customerScaffold' main = lucidT $ do
+customerScaffold' main = lucidT $ boilerPlate $ do
   nav_ $ do
     a_ [href_ "/"] "Home"
     a_ [href_ "/myFlights"] "My Flights"
@@ -54,10 +46,21 @@ employeeScaffold :: HtmlT (WebStateM Connection SessionVal ()) a -> Handler (HVe
 employeeScaffold = employeeScaffold'
 
 employeeScaffold' :: HtmlT (WebStateM Connection SessionVal ()) a -> Handler ctx b
-employeeScaffold' main = lucidT $ do
+employeeScaffold' main = lucidT $ boilerPlate $ do
   nav_ $ do
     a_ [href_ "/"] "Home"
     a_ [href_ "/actAsCustomer"] "Act As Customer"
     a_ [href_ "/logout"] "Logout"
   main_ $ do
     main
+
+boilerPlate :: Monad m => HtmlT m a -> HtmlT m a
+boilerPlate main = do
+  html_ $ do
+    head_ $ do
+      link_ [rel_ "stylesheet", href_ "/styles.css"]
+      link_ [rel_ "preconnect", href_ "https://fonts.googleapis.com"]
+      link_ [rel_ "preconnect", href_ "https://fonts.gstatic.com", crossorigin_ ""]
+      link_ [href_ "https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap", rel_ "stylesheet"] 
+    body_ $ do
+      main
