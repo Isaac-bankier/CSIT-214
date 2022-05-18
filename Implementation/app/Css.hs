@@ -10,7 +10,7 @@ import Data.HVect
 import Web.Spock hiding (root, body)
 import Clay
 import qualified Data.Text.Lazy as T
-import Prelude hiding (rem, div)
+import Prelude hiding ((**), rem, div)
 
 css :: Server (HVect xs)
 css = do
@@ -52,6 +52,8 @@ loginStyles = do
     display flex
     flexDirection column
     textAlign center
+  div # "#login-box" ** h1 # ".failed" ? do
+    color "#c91718"
   div # "#login-box" |> div |> h1 ? do
     marginBottom $ rem 3
     paddingBottom $ rem 1

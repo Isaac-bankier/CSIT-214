@@ -35,14 +35,13 @@ loginPage :: Bool -> Handler (HVect xs) a
 loginPage failed = mkSite $ do
   div_ [id_ "login-box"] $ do
     div_ [id_ "login"] $ do
-      h1_ "Login"
-      when failed $ h2_ [id_ "login-failure"] "Login failed"
+      if failed then h1_ [class_ "failed"] "Login" else h1_ "Login"
       form_ [method_ "post", action_ "/login"] $ do
         input_ [type_ "email", placeholder_ "Email", name_ "username"]
         input_ [type_ "password", placeholder_ "Password", name_ "password"]
         input_ [type_ "submit", value_ "Login"]
     div_ [id_ "register"] $ do
-      h1_ "Register"
+      if failed then h1_ [class_ "failed"] "Register" else h1_ "Register"
       form_ [method_ "post", action_ "/register"] $ do
         input_ [type_ "text", placeholder_ "Name", name_ "name"]
         input_ [type_ "email", placeholder_ "Email", name_ "username"]
