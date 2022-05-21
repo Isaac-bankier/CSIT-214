@@ -34,13 +34,17 @@ mainStyles = do
 
 loginStyles :: Css
 loginStyles = do
+  img # "#logo" ? do
+    display block
+    width $ pct 15
+    marginLeft auto
+    marginRight auto
   div # "#login-box" ? do
     fontWeight lighter
     width $ pct 40
     height $ pct 60
     marginLeft auto
     marginRight auto
-    marginTop $ pct 7
     display flex
     flexDirection row
     border (px 1) solid "#d3d3d3"
@@ -85,7 +89,7 @@ scaffoldStyles = do
     position fixed
     top $ px 0
     zIndex 2
-    backgroundColor "#c91718"
+    backgroundColor "#334e6b"
     boxShadow [bsColor "#00000030" (shadowWithBlur (px 0) (px 10) (px 20)), bsColor "#0000003b" (shadowWithBlur (px 0) (px 6) (px 6))]
   nav |> a ? do
     color "#fff"
@@ -117,7 +121,7 @@ tableStyles = do
   tr # nthChild "even" ? do
     backgroundColor "#eaeaea"
   tr # firstChild ? do
-    backgroundColor "#424250"
+    backgroundColor "#334e6b"
     color "#fff"
   tr # hover ? do
     backgroundColor "#dddddd"

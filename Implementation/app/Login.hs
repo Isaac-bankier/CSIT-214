@@ -13,13 +13,13 @@ import SiteBuilders
 import Util
 import Web.Spock
 import UserManagement
-import Control.Monad (when)
 
 login :: Server (HVect xs)
 login = do
   prehook authHook $ get "/logout" logout
-  prehook loggedOutHook $ get "/login" $ loginPage False
-  prehook loggedOutHook $ get "/loginFailed" $ loginPage True
+  prehook loggedOutHook $ get "/login" $ loginPage False False
+  prehook loggedOutHook $ get "/loginFailed" $ loginPage True False
+  prehook loggedOutHook $ get "/registerFailed" $ loginPage False True
   prehook loggedOutHook $ post "/login" $ do
     u <- param' "username"
     p <- param' "password"
@@ -31,17 +31,18 @@ login = do
     p2 <- param' "password2"
     registerAction n u p p2
 
-loginPage :: Bool -> Handler (HVect xs) a
-loginPage failed = mkSite $ do
+loginPage :: Bool -> Bool -> Handler (HVect xs) a
+loginPage lfailed rfailed = mkSite $ do
+  img_ [id_ "logo", src_ "/logo_transparent_cropped.png"]
   div_ [id_ "login-box"] $ do
     div_ [id_ "login"] $ do
-      if failed then h1_ [class_ "failed"] "Login" else h1_ "Login"
+      if lfailed then h1_ [class_ "failed"] "Login" else h1_ "Login"
       form_ [method_ "post", action_ "/login"] $ do
         input_ [type_ "email", placeholder_ "Email", name_ "username"]
         input_ [type_ "password", placeholder_ "Password", name_ "password"]
         input_ [type_ "submit", value_ "Login"]
     div_ [id_ "register"] $ do
-      if failed then h1_ [class_ "failed"] "Register" else h1_ "Register"
+      if rfailed then h1_ [class_ "failed"] "Register" else h1_ "Register"
       form_ [method_ "post", action_ "/register"] $ do
         input_ [type_ "text", placeholder_ "Name", name_ "name"]
         input_ [type_ "email", placeholder_ "Email", name_ "username"]

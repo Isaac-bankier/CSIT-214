@@ -4,18 +4,19 @@
 module Main where
 
 import Basics
+import BookFlight
+import BookServices
+import Css
 import Database.SQLite.Simple
 import Db
+import EmployeeAct
+import Home
 import Login
+import MyFlights
+import Network.Wai.Middleware.Static
 import UserManagement
 import Web.Spock
 import Web.Spock.Config
-import Home
-import BookFlight
-import MyFlights
-import BookServices
-import EmployeeAct
-import Css
 
 main :: IO ()
 main = do
@@ -26,11 +27,13 @@ main = do
   runSpock 8000 $ spock cfg app
 
 app :: Server ()
-app = prehook baseHook $ do
-  css
-  prehook authHook $ get "/" home
-  myFlights
-  bookFlight
-  bookService
-  employeeAct
-  login
+app = do
+  middleware $ staticPolicy (addBase "assets")
+  prehook baseHook $ do
+    css
+    prehook authHook $ get "/" home
+    myFlights
+    bookFlight
+    bookService
+    employeeAct
+    login
