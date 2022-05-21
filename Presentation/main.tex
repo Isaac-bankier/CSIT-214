@@ -1,0 +1,53 @@
+\documentclass[12pt]{beamer}
+\usepackage{amsmath, amssymb, amsfonts, amsthm}
+\usepackage{fontspec}
+\usepackage{tikz}
+\usepackage{graphicx}
+
+\usetheme{Rochester}
+\usecolortheme{clean}
+
+\setmainfont{Lato}
+
+\newtheorem{thm}{Theorem}
+
+\title{Presentation}
+\author{Group Next To The Door}
+\date{2022-05-21}
+
+\beamertemplatenavigationsymbolsempty
+
+\begin{document}
+\begin{frame}
+  \maketitle
+\end{frame}
+
+\AtBeginSection[]{
+  \begin{frame}
+    \vfill
+    \centering
+    \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+      \usebeamerfont{title}\insertsectionhead\par%
+    \end{beamercolorbox}
+    \vfill
+  \end{frame}
+}
+
+\section{Overview}
+\begin{frame}[plain]
+  \frametitle{Problem Intro (30 Sec)}
+\end{frame}
+
+\section{Product}
+\begin{frame}[plain]
+  \frametitle{Specified Features (1 Min)}
+\end{frame}
+
+\begin{frame}[plain]
+  \frametitle{Bonus Features + Justification (1 Min)}
+\end{frame}
+
+\begin{frame}[plain]
+  \frametitle{Demo (2 Min)}
+\end{frame}
+\end{document}
