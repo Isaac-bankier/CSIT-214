@@ -65,7 +65,7 @@ findSeat fid = scaffold $ do
       td_ "E"
       td_ "F"
     foldr (*>) (return ()) $ fmap (processSeats seats) $ do
-      row <- [1:: Int ..20]
+      row <- [1:: Int ..30]
       let tableRow = do
             column <- ['A'..'F']
             return $ show row ++ ['-', column]

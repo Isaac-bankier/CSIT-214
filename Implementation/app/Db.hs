@@ -53,15 +53,17 @@ addData c = do
     execute c "INSERT INTO flights (fromCity, toCity, date) VALUES (?, ?, ?);" d
   let seats = do
         (_, num) <- zip flights [1 :: Int ..]
-        row <- [1 :: Int ..20]
+        row <- [1 :: Int ..30]
         column <- ['A'..'F']
         return (num, show row ++ ['-', column])
   forM_ seats $ \(fnum, sname) -> do
     cost <- randomRIO (80 :: Int, 1000)
     execute c "INSERT INTO seats (flight, name, cost) VALUES (?, ?, ?);" (fnum, sname, cost)
   let services = [ ("Chicken Sandwich" :: T.Text, "Not great but what else will you get up here?" :: T.Text, 10 :: Int)
-                 , ("Coffee", "$6 bucks for coffee‽", 6)
+                 , ("Coffee", "$6 bucks for coffee!?", 6)
                  , ("Whiskey", "Nothing is better than flying drunk. Especially if you're the pilot.", 13)
+                 , ("Internet", "Ha ha ha. You thought because it's slow it must be cheap!? What an idiot you must be!", 99)
+                 , ("Donation to a Good Cause", "All donations taken go directly to our tax accountants in need.", 5)
                  ]
   forM_ services $ \d -> do
     execute c "INSERT INTO services (name, description, cost) VALUES (?, ?, ?);" d

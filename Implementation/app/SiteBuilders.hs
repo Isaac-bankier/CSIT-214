@@ -60,6 +60,7 @@ boilerPlate :: Monad m => HtmlT m a -> HtmlT m a
 boilerPlate main = do
   html_ $ do
     head_ $ do
+      title_ "Fly Dream Air"
       link_ [rel_ "stylesheet", href_ "/styles.css"]
       link_ [rel_ "preconnect", href_ "https://fonts.googleapis.com"]
       link_ [rel_ "preconnect", href_ "https://fonts.gstatic.com", crossorigin_ ""]

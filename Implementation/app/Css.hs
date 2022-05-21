@@ -23,6 +23,7 @@ styles = do
     loginStyles
     scaffoldStyles
     tableStyles
+    buttonStyles
 
 mainStyles :: Css
 mainStyles = do
@@ -49,7 +50,7 @@ loginStyles = do
     flexDirection row
     border (px 1) solid "#d3d3d3"
     borderRadius (px 8) (px 8) (px 8) (px 8)
-    boxShadow [bsColor "#00000059" (shadowWithBlur (px 0) (px 5) (px 15))]
+    boxShadow [bsColor "#00000030" (shadowWithBlur (px 0) (px 10) (px 20)), bsColor "#0000003b" (shadowWithBlur (px 0) (px 6) (px 6))]
   div # "#login-box" |> div ? do
     width (pct 100)
     padding (rem 3) (rem 3) (rem 2) (rem 3)
@@ -78,7 +79,6 @@ loginStyles = do
     padding (rem 0.4) (rem 0.4) (rem 0.4) (rem 0.4)
     border (px 0) none "#000000"
     borderBottom (px 1) solid "#d3d3d3"
-    boxShadow [none]
 
 scaffoldStyles :: Css
 scaffoldStyles = do
@@ -110,7 +110,7 @@ tableStyles = do
     "table-layout" -: "auto"
     width $ pct 70
     borderCollapse collapse
-    borderRadius (px 8)  (px 8) (px 8) (px 8)
+    borderRadius (px 8) (px 8) (px 8) (px 8)
     boxShadow [bsColor "#00000030" (shadowWithBlur (px 0) (px 10) (px 20)), bsColor "#0000003b" (shadowWithBlur (px 0) (px 6) (px 6))]
   tbody ? do
     borderRadius (px 8)  (px 8) (px 8) (px 8)
@@ -131,3 +131,31 @@ tableStyles = do
     padding (rem 1) (rem 1) (rem 1) (rem 1)
   td |> form ? do
     margin (px 0) (px 0) (px 0) (px 0)
+
+buttonStyles :: Css
+buttonStyles = do
+  input # "type=submit" ? do
+    backgroundColor "#334e6b"
+    borderRadius (px 8) (px 8) (px 8) (px 8)
+    borderStyle none
+    boxSizing borderBox
+    color "#FFFFFF"
+    cursor pointer
+    display inlineBlock
+    fontSize $ px 14
+    fontWeight $ weight 500
+    height $ px 40
+    lineHeight $ px 20
+    margin (px 0) (px 0) (px 0) (px 0)
+    outline solid (px 0) "#000"
+    padding (rem 0.2) (rem 1) (rem 0.2) (rem 1)
+    position relative
+    textAlign center
+    textDecoration none
+    transition "background-color" 0.4 easeInOut 0
+    verticalAlign vAlignBaseline
+    userSelect none;
+  input # "type=submit" # hover ? do
+    backgroundColor "#3dc2ca"
+  input # "type=submit" # focus ? do
+    backgroundColor "#3dc2ca"
