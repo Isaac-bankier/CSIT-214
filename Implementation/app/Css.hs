@@ -126,7 +126,7 @@ tableStyles = do
   tr # hover ? do
     backgroundColor "#dddddd"
   tr # firstChild # hover ? do
-    backgroundColor "#424250"
+    backgroundColor "#334e6b"
   td ? do
     padding (rem 1) (rem 1) (rem 1) (rem 1)
   td |> form ? do
