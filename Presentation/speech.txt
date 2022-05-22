@@ -1,10 +1,12 @@
 ===== Intro =====
+So we are the group next to the door. We've got Jay, Quinn, Ngai, Oliver, and Zhara in our team.
+
 So I just want to start by walking everyone through the development and management of this project and then I'll get to an actuall demonstration of our finished product.
 
 ===== Buisness Case =====
-As you all knw, FlyDreamAir is a major airline that covers a wide range of routes throughout the world, has a large fleet of aircrafts and has a large network of travel agencies and customers across the world. But we found that our company has a lack of IT software system that can provide better customer experience and increase customer loyalty compared to other flight companies. Therefore, we decided to start an IT project to develop our software system in order to give our customer better support. 
+As you all know, FlyDreamAir is a major airline that covers a wide range of routes throughout the world, has a large fleet of aircrafts and has a large network of travel agencies and customers across the world. But we found that our company has a lack of IT software system that can provide better customer experience and increase customer loyalty compared to other flight companies. Therefore, we decided to start an IT project to develop our software system in order to give our customer better support. 
 
-We designed a system that allows this to be done while still being compatible with the old methods of doing buisness. Our system allows the customer to choose their flight and seat as well as any extra in-flight services through a familar and easy to use interface provided through a website. Additionally are system allows the old method of taking customer bookings to continue by allowing customer service representatives take actions on behalf of users through the same web interface.
+We designed a system that allows this to be done while still being compatible with the old methods of doing buisness. Our system allows the customer to choose their flight and seat as well as any extra in-flight services through a familar and easy to use interface provided through a website. Additionally our system allows the old method of taking customer bookings to continue by allowing customer service representatives take actions on behalf of users through the same web interface.
 
 ===== Resources =====
 For resource management in this project, we had at our disposal 6 team members. These assets were divided into roles which suited their expertise while also balancing the workload to be done. In agreement with the entire group, I was chosen to take on the role of "software engineer" to develop the prototype given I had prior experience in software development. ​
