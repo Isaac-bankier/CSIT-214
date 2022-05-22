@@ -1,0 +1,48 @@
+===== Intro =====
+So I just want to start by walking everyone through the development and management of this project and then I'll get to an actuall demonstration of our finished product.
+
+===== Buisness Case =====
+As you all knw, FlyDreamAir is a major airline that covers a wide range of routes throughout the world, has a large fleet of aircrafts and has a large network of travel agencies and customers across the world. But we found that our company has a lack of IT software system that can provide better customer experience and increase customer loyalty compared to other flight companies. Therefore, we decided to start an IT project to develop our software system in order to give our customer better support. 
+
+We designed a system that allows this to be done while still being compatible with the old methods of doing buisness. Our system allows the customer to choose their flight and seat as well as any extra in-flight services through a familar and easy to use interface provided through a website. Additionally are system allows the old method of taking customer bookings to continue by allowing customer service representatives take actions on behalf of users through the same web interface.
+
+===== Resources =====
+For resource management in this project, we had at our disposal 6 team members. These assets were divided into roles which suited their expertise while also balancing the workload to be done. In agreement with the entire group, I was chosen to take on the role of "software engineer" to develop the prototype given I had prior experience in software development. ​
+
+Weekly meetings were performed every week to promote unity of vision on the project, and keep everyone up to date with the progress of the project report development. Within these meetings, our next steps and documents to be developed would be planned out, with our expectations for next week’s progress to be predicted.​
+
+Work was distributed among our members based on the total points. With each section having somewhere of 2-4 marks, we divided the tasks so that each member had around 6 marks of work to complete. This promoted fairness and ensured that no one member was overloaded with more tasks than another.​
+
+To promote accountability, each team members work was made available to other teams, who were free to provide criticisms or suggestions to better the members document.
+
+===== Scope =====
+The scope of our project was determined by conceiving the following requirements:​
+
+Firstly, the system itself had to allow customers to purchase flights and services over the internet the same as they would be able to do in person without the website. The system also had to implement a new database to store new information from this website, such as account data, flight records and more. We decided that the database information would also have to be accessible during all stages of a flight, by the staff on board the flight.​
+
+Secondly, the users of the system were divided into customers and staff. The customers needed to be able to book flights, manage their flight/seat reservations and to purchase in flight services, namely food and drinks. The staff needed to be able to use the system to monitor the layout of passengers and their services on any particular flight.​
+
+===== Wbs =====
+Here's our wbs. Our Wbs is not reflective of our actual development process. Given that I was the only developer making only a prototype the wbs would've been completely trivial so instead we decided to consider a more complicated case where there were teams of 3-7 members making the full product.
+
+==z=== Costs =====
+So I won't go through all of the costs in detail here but as we are considering the more complicated case of teams working on this project it dramatically increased the costs of labour. The wages were the biggest cost coming in at $241,520. We then had the comparitively small opperational costs like rent, internet, that are required to develop this system which totaled $12,954 for the duration of the development.
+
+This means that the website would cost a little over a quarter of a million dollars to develop which is about half of our allocated budget.
+
+===== Cost Benefit =====
+So you may be asking "Is a quarter million dollars a justifiable price for this website?" and the answer is yes.
+Building a website can make the procedure of flight booking easier which means there's less barriers to people flying with us. The website especially opens us up to younger customers who expect to be able to book all their services online, rather than in person or over the phone. This also gives us the oppurtunity to allow potential customers to more easily compare our services to our competitors. Since we believe our services are strictly better than our competitors we see this as a benefit.
+
+Additionally, making a website for flight booking can handle a large number of customers at the same time. Notably, the cost to take bookings does not increase with the amount of customer bookings because we do not need to pay customer service representives to take bookings from customers. This drammatically cuts the costs associated with our buisness and opens new avenues for dramatic growth. 
+
+===== Risks =====
+We identified 13 risks that could threaten the completion of this project. More than half of these actually occured and impacted us.
+
+The biggest of these is inadequet information on the project requirements. We solved this by designing the software system in a flexible way to allow changes to be made quickly to allow rapid prototyping to converge on what we considered to be the most sensible solution.
+
+We also had significant issues with communication of requirements. For example there was significant miscommunication about the different types of users. At one stage there were 5 different roles a user could be however the descriptions of these varied between our documentation and the implementation. There were even different definitions in different parts of the documentation. Our solution was to reduce the complexity of our user roles into just 2 cases, a customer and an employee, with these roles taking different parts of the functionality from the previous roles.
+
+===== Demo =====
+
+===== Questions =====
