@@ -1,4 +1,0 @@
-# Website
-# Haskell
-# Sqlite
-# Scotty

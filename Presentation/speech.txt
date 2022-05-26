@@ -27,7 +27,7 @@ Secondly, the users of the system were divided into customers and staff. The cus
 ===== Wbs =====
 Here's our wbs. Our Wbs is not reflective of our actual development process. Given that I was the only developer making only a prototype the wbs would've been completely trivial so instead we decided to consider a more complicated case where there were teams of 3-7 members making the full product.
 
-==z=== Costs =====
+===== Costs =====
 So I won't go through all of the costs in detail here but as we are considering the more complicated case of teams working on this project it dramatically increased the costs of labour. The wages were the biggest cost coming in at $241,520. We then had the comparitively small opperational costs like rent, internet, that are required to develop this system which totaled $12,954 for the duration of the development.
 
 This means that the website would cost a little over a quarter of a million dollars to develop which is about half of our allocated budget.
